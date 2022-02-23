@@ -1,0 +1,7 @@
+[profile 1fa]
+cli_pager=
+output=json
+
+[default]
+cli_pager=
+output=json
