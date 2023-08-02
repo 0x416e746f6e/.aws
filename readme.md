@@ -1,31 +1,25 @@
-## Storing AWS CLI credentials in macOS keychain
+# Storing AWS CLI credentials in macOS keychain
 
-1. Create AWS access key, download the CSV and open it.
+>
+> Scripts here assume that the following environment variables are correctly
+> assigned in your `.zshrc`/`.bashrc`:
+>
+> - `AWS_ACCOUNT_ID`
+> - `AWS_IAM_USERNAME`
+>
 
-   There you will find <kbd>Access key ID</kbd> and
-   <kbd>Secret access key</kbd>. Make note of them:
+Create AWS access key and run the script below.
 
-   ```bash
-    _ACCESS_KEY_ID=XXX
-    _SECRET_ACCESS_KEY=YYY
-   ```
+```bash
+# The spaces in front are to prevent storing secrets in terminal history
+  AWS_ACCESS_KEY_ID=XXX
+  AWS_SECRET_ACCESS_KEY=YYY
 
-   **NOTE:** Add an extra space in the beginning of the command to
-             prevent it being remembered by the `history` command.
+AWS_USER_ARN="arn:aws:iam::$AWS_ACCOUNT_ID:user/$AWS_IAM_USERNAME"
+AWS_CREDENTIALS="{\"Version\":1,\"AccessKeyId\":\"$AWS_ACCESS_KEY_ID\",\"SecretAccessKey\":\"$AWS_SECRET_ACCESS_KEY\"}"
 
-2. Craft the JSON object that you will use to authenticate:
-
-   ```bash
-   _CREDENTIALS="{\"Version\":1,\"AccessKeyId\":\"$_ACCESS_KEY_ID\",\"SecretAccessKey\":\"$_SECRET_ACCESS_KEY\"}"
-   ```
-
-3. And now push them into the keychain:
-
-   ```bash
-   _USER="arn:aws:iam::176395444877:user/$( id -un )"
-
-   security add-generic-password -l "$_USER" -a "$_USER" -s "$_USER" -w "$_CREDENTIALS"
-   ```
+security add-generic-password -l "$AWS_USER_ARN" -a "$AWS_USER_ARN" -s "$AWS_USER_ARN" -w "$AWS_CREDENTIALS"
+```
 
 ## Using short-lived tokens with AWS CLI
 

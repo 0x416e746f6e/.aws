@@ -1,7 +1,9 @@
 #!/bin/bash
 
-set -e
+set -e -o pipefail
 
-_USER="arn:aws:iam::176395444877:user/$( id -un )"
+pwd=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-security find-generic-password -l "$_USER" -a "$_USER" -s "$_USER" -w
+. $pwd/lib.sh
+
+get_1fa_token

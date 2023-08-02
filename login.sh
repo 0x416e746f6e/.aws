@@ -1,13 +1,9 @@
 #!/bin/bash
 
-set -e
+set -e -o pipefail
 
-_DEVICE="arn:aws:iam::176395444877:mfa/$( id -un )"
+pwd=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-printf "Enter one-time password for \`$_DEVICE\`: "; read _PIN
+. $pwd/lib.sh
 
-_TOKEN=$( aws --profile 1fa sts get-session-token --serial-number $_DEVICE --token-code $_PIN | jq -r -c ".Credentials + { \"Version\": 1 }" )
-
-security delete-generic-password -l "$_DEVICE" -a "$_DEVICE" -s "$_DEVICE" > /dev/null 2>&1 || true
-
-security add-generic-password -l "$_DEVICE" -a "$_DEVICE" -s "$_DEVICE" -w "$_TOKEN"
+save_2fa_token $( request_2fa_token )

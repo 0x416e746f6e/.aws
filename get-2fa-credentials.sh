@@ -1,7 +1,18 @@
 #!/bin/bash
 
-set -e
+set -e -o pipefail
 
-_DEVICE="arn:aws:iam::176395444877:mfa/$( id -un )"
+pwd=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-security find-generic-password -l "$_DEVICE" -a "$_DEVICE" -s "$_DEVICE" -w
+. $pwd/lib.sh
+
+AWS_SESSION_TOKEN=$( get_2fa_token )
+EXPIRATION=$( printf "${AWS_SESSION_TOKEN}" | jq -r ".Expiration" )
+NOW=$( date -u +"%Y-%m-%dT%H:%M:%S%z" )
+
+if [ "$NOW" \> "$EXPIRATION" ]; then
+  $pwd/login.sh
+  AWS_SESSION_TOKEN=$( get_2fa_token )
+fi
+
+printf "${AWS_SESSION_TOKEN}"
