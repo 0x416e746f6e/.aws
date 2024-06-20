@@ -20,17 +20,37 @@ function get_2fa_token() {
 function save_2fa_token() {
   local AWS_SESSION_TOKEN=$1
 
-  security delete-generic-password \
-      -l "${AWS_MFA_DEVICE}" \
-      -a "${AWS_MFA_DEVICE}" \
-      -s "${AWS_MFA_DEVICE}" \
-    > /dev/null 2>&1 || true
+  if [[ -n "${DEBUG}" ]]; then
+    echo "New AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN}" >> ${HOME}/.aws/debug.log
+  fi
 
-  security add-generic-password \
-    -l "${AWS_MFA_DEVICE}" \
-    -a "${AWS_MFA_DEVICE}" \
-    -s "${AWS_MFA_DEVICE}" \
-    -w "${AWS_SESSION_TOKEN}"
+  if [[ -z "${DEBUG}" ]]; then
+    security delete-generic-password \
+        -l "${AWS_MFA_DEVICE}" \
+        -a "${AWS_MFA_DEVICE}" \
+        -s "${AWS_MFA_DEVICE}" \
+      > /dev/null 2>&1 || true
+
+    security add-generic-password \
+        -l "${AWS_MFA_DEVICE}" \
+        -a "${AWS_MFA_DEVICE}" \
+        -s "${AWS_MFA_DEVICE}" \
+        -w "${AWS_SESSION_TOKEN}" \
+      > /dev/null 2>&1 || true
+  else
+    security delete-generic-password \
+        -l "${AWS_MFA_DEVICE}" \
+        -a "${AWS_MFA_DEVICE}" \
+        -s "${AWS_MFA_DEVICE}" \
+      >> ${HOME}/.aws/debug.log 2>&1 || true
+
+    security add-generic-password \
+        -l "${AWS_MFA_DEVICE}" \
+        -a "${AWS_MFA_DEVICE}" \
+        -s "${AWS_MFA_DEVICE}" \
+        -w "${AWS_SESSION_TOKEN}" \
+      >> ${HOME}/.aws/debug.log
+    fi
 }
 
 function request_2fa_token() {

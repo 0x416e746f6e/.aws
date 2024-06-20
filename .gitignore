@@ -5,3 +5,11 @@
 # AWS
 
 cli/cache
+
+# Logs
+
+*.log
+
+# Temporary files
+
+.temp
