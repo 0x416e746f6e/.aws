@@ -62,8 +62,13 @@ function request_2fa_token() {
       read
     fi
     PIN=$( $ykman oath accounts code --single ${AWS_MFA_DEVICE} )
+  elif op=$(which op); then
+    PIN=$(op item get ${AWS_OP_ITEM} --otp 2>/dev/null || echo "")
+    if [ -z "$PIN" ]; then
+      echo "Enter the name or ID of your 1password item:" >&2
+      read PIN
+    fi
   else
-    # TODO: Implement 1password integration
     printf "Enter one-time password for \`${AWS_MFA_DEVICE}\`: " >&2
     read PIN
   fi

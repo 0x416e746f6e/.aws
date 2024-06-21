@@ -2,10 +2,14 @@
 
 >
 > Scripts here assume that the following environment variables are correctly
-> assigned in your `.zshrc`/`.bashrc`:
+> assigned in your `.zshrc`/`.bashrc`.
 >
+> Required:
 > - `AWS_ACCOUNT_ID`
 > - `AWS_IAM_USERNAME`
+>
+> Optional:
+> - `AWS_OP_ITEM` - The item name or ID of your AWS OTP credential in 1password.
 >
 
 Create AWS access key and run the script below.
@@ -15,7 +19,7 @@ Create AWS access key and run the script below.
   AWS_ACCESS_KEY_ID=XXX
   AWS_SECRET_ACCESS_KEY=YYY
 
-AWS_USER_ARN="arn:aws:iam::$AWS_ACCOUNT_ID:user/$AWS_IAM_USERNAME"
+AWS_USER_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:user/${AWS_IAM_USERNAME}"
 AWS_CREDENTIALS="{\"Version\":1,\"AccessKeyId\":\"$AWS_ACCESS_KEY_ID\",\"SecretAccessKey\":\"$AWS_SECRET_ACCESS_KEY\"}"
 
 security add-generic-password -l "$AWS_USER_ARN" -a "$AWS_USER_ARN" -s "$AWS_USER_ARN" -w "$AWS_CREDENTIALS"
