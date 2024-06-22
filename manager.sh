@@ -25,25 +25,9 @@ pwd=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 set_lock
 
-HELP_MESSAGE=<<EOF
-        Login helper for aws mfa tool.
-
-        Usage:
-
-            ~/.aws/login.sh [options]
-
-        Options:
-
-            --custom-config <url_or_path>  Save custom config file from URL or path
-            --help                         Show this help message
-            --setup                        Run setup to save account and 2fa details
-
-EOF
-
-
 if [[ -z "$1" ]]; then
   echo "🚫 No argument provided."
-  echo "${HELP_MESSAGE}"
+  get_help_message
   delete_lock
   exit 1
 else
@@ -60,7 +44,7 @@ else
       fi
       ;;
   --help|-h)
-      echo "${HELP_MESSAGE}"
+      get_help_message
       delete_lock
       exit 0
       ;;

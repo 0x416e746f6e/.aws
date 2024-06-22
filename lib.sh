@@ -235,3 +235,23 @@ function set_lock() {
 function delete_lock() {
   rm -f "${HOME}/.aws/login.lock"
 }
+
+function get_help_message() {
+  local HELP_MESSAGE=<<EOF
+        CLI for aws-manager.
+
+        Usage:
+
+            ~/.aws/manager.sh [options]
+
+        Options:
+
+            --custom-config <url_or_path>  Save custom config file from URL or path
+            --help                         Show this help message
+            --login                        Request and save 2fa token
+            --setup                        Run setup to save account and 2fa details
+
+EOF
+
+  echo "${HELP_MESSAGE}"
+}
