@@ -1,10 +1,15 @@
-# Storing AWS CLI credentials in macOS keychain
+# aws-cli-manager
+
+Storing AWS CLI credentials in macOS keychain.
 
 ## Supported environments
 
 OS:
-- Linux
 - MacOS
+
+Shells:
+- zsh
+- bash
 
 OTP Engines:
 - Yubikey
@@ -15,7 +20,7 @@ OTP Engines:
 
 ```bash
 # Linux
-curl -L https://raw.githubusercontent.com/0x416e746f6e/.aws/main/awsup.sh | bash
+curl -sL https://raw.githubusercontent.com/0x416e746f6e/.aws/main/awsup.sh | bash
 ```
 
 ## Manual start
@@ -50,7 +55,7 @@ security add-generic-password -l "$AWS_USER_ARN" -a "$AWS_USER_ARN" -s "$AWS_USE
 
 1. Configure MFA with your AWS account.
 
-2. Run `~/.aws/login.sh` and enter your one-time password from MFA. If
+2. Run `~/.aws/manager.sh` and enter your one-time password from MFA. If
    all is Ok it will generate a short-lived auth token and store it in
    the keychain for later use by AWS CLI.
 
@@ -63,8 +68,8 @@ data like roles and account IDs to be managed privately.
 
 ```bash
 # File
-~/.aws/login.sh --custom-config /path/to/config
+~/.aws/manager.sh --custom-config /path/to/config
 
 # URL
-~/.aws/login.sh --custom-config https://config
+~/.aws/manager.sh --custom-config https://config
 ```

@@ -19,9 +19,7 @@ printf '{ "ts": "%s", "grandgrandparent": { "pid": %s, "command": "%s" }, "grand
     "${PID}" "${ARG}" \
   >> ${HOME}/.aws/login.log
 
-pwd=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
-. $pwd/lib.sh
+. ${HOME}/.aws/lib.sh
 
 set_lock
 
@@ -40,23 +38,19 @@ else
       else
         save_custom_config "$2"
         delete_lock
-        exit 0
       fi
       ;;
   --help|-h)
       get_help_message
       delete_lock
-      exit 0
       ;;
   --login|-l)
       save_2fa_token $( request_2fa_token )
       delete_lock
-      exit 0
       ;;
   --setup|-s)
       save_setup
       delete_lock
-      exit 0
       ;;
   *)
       echo "🚫 Argument not supported: $1"
