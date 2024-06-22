@@ -1,8 +1,29 @@
 # Storing AWS CLI credentials in macOS keychain
 
+## Supported environments
+
+OS:
+- Linux
+- MacOS
+
+OTP Engines:
+- Yubikey
+- 1password
+- Manual
+
+## Quick start
+
+```bash
+# Linux
+curl -L https://raw.githubusercontent.com/0x416e746f6e/.aws/main/awsup.sh | bash
+```
+
+## Manual start
+
 >
 > Scripts here assume that the following environment variables are correctly
-> assigned in your `.zshrc`/`.bashrc`.
+> assigned in your shell profile. You can do this using the setup flag shown
+> below or manually:
 >
 > Required:
 > - `AWS_ACCOUNT_ID`
@@ -12,7 +33,7 @@
 > - `AWS_OP_ITEM` - The item name or ID of your AWS OTP credential in 1password.
 >
 
-Create AWS access key and run the script below.
+Create AWS access key and run the script below:
 
 ```bash
 # The spaces in front are to prevent storing secrets in terminal history
@@ -32,3 +53,18 @@ security add-generic-password -l "$AWS_USER_ARN" -a "$AWS_USER_ARN" -s "$AWS_USE
 2. Run `~/.aws/login.sh` and enter your one-time password from MFA. If
    all is Ok it will generate a short-lived auth token and store it in
    the keychain for later use by AWS CLI.
+
+## Using an existing aws config
+
+After setup, you can specify a custom config file. This lets private
+data like roles and account IDs to be managed privately.
+
+> Note that `mfa_device` must be absent from your config file.
+
+```bash
+# File
+~/.aws/login.sh --custom-config /path/to/config
+
+# URL
+~/.aws/login.sh --custom-config https://config
+```

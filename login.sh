@@ -19,20 +19,65 @@ printf '{ "ts": "%s", "grandgrandparent": { "pid": %s, "command": "%s" }, "grand
     "${PID}" "${ARG}" \
   >> ${HOME}/.aws/login.log
 
-if [[ -f ${HOME}/.aws/login.lock ]]; then
-  if [[ -t 0 ]]; then
-    >&2 echo "Warning: another login attempt might be ongoing in parallel!"
-  else
-    exit 1
-  fi
-fi
-
-touch ${HOME}/.aws/login.lock
-
 pwd=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 . $pwd/lib.sh
 
-save_2fa_token $( request_2fa_token )
+set_lock
 
-rm -f ${HOME}/.aws/login.lock
+HELP_MESSAGE=<<EOF
+        Login helper for aws mfa tool.
+
+        Usage:
+
+            ~/.aws/login.sh [options]
+
+        Options:
+
+            --custom-config <url_or_path>  Save custom config file from URL or path
+            --help                         Show this help message
+            --setup                        Run setup to save account and 2fa details
+
+EOF
+
+
+if [[ -z "$1" ]]; then
+  echo "🚫 No argument provided."
+  echo "${HELP_MESSAGE}"
+  delete_lock
+  exit 1
+else
+  case "$1" in
+  --custom-config|-c)
+      if [[ -z "$2" ]]; then
+        echo "🚫 Usage: --custom-config <url_or_path>"
+        delete_lock
+        exit 1
+      else
+        save_custom_config "$2"
+        delete_lock
+        exit 0
+      fi
+      ;;
+  --help|-h)
+      echo "${HELP_MESSAGE}"
+      delete_lock
+      exit 0
+      ;;
+  --login|-l)
+      save_2fa_token $( request_2fa_token )
+      delete_lock
+      exit 0
+      ;;
+  --setup|-s)
+      save_setup
+      delete_lock
+      exit 0
+      ;;
+  *)
+      echo "🚫 Argument not supported: $1"
+      delete_lock
+      exit 1
+      ;;
+  esac
+fi
