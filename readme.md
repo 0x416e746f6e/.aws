@@ -4,13 +4,10 @@ AWS CLI Helper makes configuration easy and authentication very easy.
 
 ## Supported environments
 
-OS: `macOS`, `Ubuntu`
-
-Shells: `zsh`, `bash`
-
-OTP Engines: `Yubikey`, `1password`, `Manual`
-
-Vault Engines: `macOS Keychain`, `file`
+- OS: `macOS`, `Ubuntu`
+- Shell: `zsh`, `bash`
+- OTP engine: `Yubikey`, `1password`, `Manual`
+- Vault engine: `macOS Keychain`, `file`
 
 ## Quick start
 
