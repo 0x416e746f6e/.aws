@@ -1,7 +1,6 @@
 AWS_HELPER_PROFILE="${HOME}/.profile"
 [[ -f "${AWS_HELPER_PROFILE}" ]] && source "${AWS_HELPER_PROFILE}"
 
-AWS_HELPER_MFA_DEVICE="arn:aws:iam::${AWS_HELPER_ACCOUNT_ID}:mfa/${AWS_HELPER_IAM_USERNAME}"
 AWS_HELPER_USER_ARN="arn:aws:iam::${AWS_HELPER_ACCOUNT_ID}:user/${AWS_HELPER_IAM_USERNAME}"
 
 function get_1fa_token() {
@@ -275,6 +274,9 @@ function save_setup() {
     local PROMPT_AWS_HELPER_OP_ITEM="$( get_prompt_string "Enter the name or ID of your 1password item:" )"
     set_profile_env "AWS_HELPER_OP_ITEM" "${PROMPT_AWS_HELPER_OP_ITEM}"
   fi
+
+  local PROMPT_AWS_HELPER_MFA_DEVICE="$( get_prompt_string "Enter the ARN of your MFA device:" )"
+  set_profile_env "AWS_HELPER_MFA_DEVICE" "${PROMPT_AWS_HELPER_MFA_DEVICE}"
 
   if get_prompt_bool "Do you want to add a custom aws config file?"; then
     local PROMPT_CUSTOM_CONFIG="$( get_prompt_string "Enter the path or URL to the custom config file:" )"
