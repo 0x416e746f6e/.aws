@@ -263,9 +263,9 @@ function set_profile_env() {
 
   if grep -q "^export ${KEY}=" "${AWS_HELPER_PROFILE}"; then
     if [[ "$OSTYPE" == "darwin"* ]]; then
-      sed -i '' "s/^export ${KEY}=.*/export ${KEY}=${VALUE}/" "${AWS_HELPER_PROFILE}"
+      sed -i '' "s|^export ${KEY}=.*|export ${KEY}=${VALUE}|" "${AWS_HELPER_PROFILE}"
     else
-      sed -i "s/^export ${KEY}=.*/export ${KEY}=${VALUE}/" "${AWS_HELPER_PROFILE}"
+      sed -i "s|^export ${KEY}=.*|export ${KEY}=${VALUE}|" "${AWS_HELPER_PROFILE}"
     fi
   else
     echo "export ${KEY}=${VALUE}" >> "$AWS_HELPER_PROFILE"
