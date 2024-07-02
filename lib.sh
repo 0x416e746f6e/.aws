@@ -166,12 +166,21 @@ function save_2fa_token_file() {
 }
 
 function get_2fa_otp_manual() {
-    local PIN="$( get_prompt_private_string "Enter one-time password for \`${AWS_HELPER_MFA_DEVICE_ARN}\`:" )"
-    echo "${PIN}"
+  local PIN
+  while true; do
+    PIN="$( get_prompt_private_string "🔑 Enter one-time password for \`${AWS_HELPER_MFA_DEVICE_ARN}\`:" )"
+    if [[ "${PIN}" =~ ^[0-9]{6}$ ]]; then
+      break
+    else
+      printf "%s " "🚫 Invalid input. Please enter a 6-digit number." >/dev/tty
+      printf "\n" >/dev/tty
+    fi
+  done
+  printf "%s" "${PIN}"
 }
 
 function request_2fa_token() {
-  local PIN=""
+  local PIN
 
   echo "🔄 Logging into AWS..." >&2
 
@@ -186,12 +195,9 @@ function request_2fa_token() {
     if [ -n "${AWS_HELPER_OP_ITEM}" ]; then
       PIN=$( $op item get ${AWS_HELPER_OP_ITEM} --otp )
     fi
-  fi
-
-  # Verify that PIN is exactly 6 numbers or fall back to manual input
-  while [[ ! "${PIN}" =~ ^[0-9]{6}$ ]]; do
+  else
     PIN=$( get_2fa_otp_manual )
-  done
+  fi
 
   echo "🔄 Requesting session token from AWS API..." >&2
 
@@ -234,23 +240,26 @@ function save_custom_config() {
 }
 
 function get_prompt_string() {
-  echo -n "🔑 $1 " >&2
-  read CHOICE
-  echo "${CHOICE}"
+  printf "%s " "🔑 $1" >/dev/tty
+  read -r CHOICE </dev/tty
+  printf "%s" "${CHOICE}"
 }
 
 function get_prompt_private_string() {
-  stty -echo
-  echo -n "🔑 $1 " >&2
-  read CHOICE
-  stty echo
-  echo >&2
-  echo "${CHOICE}"
+    local prompt="$1"
+
+    stty -echo
+    printf "%s " "🔑 $prompt" >/dev/tty
+    read -r CHOICE </dev/tty
+    stty echo
+    printf "\n" >/dev/tty
+
+    printf "%s" "${CHOICE}"
 }
 
 function get_prompt_bool() {
-  echo -n "🔑 $1 [y/N]: " >&2
-  read CHOICE
+  printf "%s " "🔑 $1 [y/N]" >/dev/tty
+  read -r CHOICE </dev/tty
   case "${CHOICE}" in
     y|Y ) return 0;;
     * ) return 1;;
