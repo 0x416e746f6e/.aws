@@ -19,7 +19,7 @@ CREDENTIALS_FILE="${TARGET_DIR}/credentials"
 # Get the current date for the directory names
 DATE=$(date +%Y-%m-%d_%H-%M-%S)
 BACKUP_DIR="${TARGET_DIR}/backup-${DATE}"
-TEMP_DIR="$( pwd )/awsup-${DATE}"
+TEMP_DIR="$( mktemp -d -t awsup-XXX )"
 
 # Check if Git is installed
 if ! command -v git &> /dev/null; then
