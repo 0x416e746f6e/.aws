@@ -1,16 +1,5 @@
 AWS_HELPER_PROFILE="${HOME}/.profile"
 
-function source_profile() {
-  if [[ -f "${AWS_HELPER_PROFILE}" ]]; then
-    source "${AWS_HELPER_PROFILE}"
-  else
-    echo "🚫 Profile not found: ${AWS_HELPER_PROFILE}" >&2
-    exit 1
-  fi
-}
-
-source_profile
-
 function get_1fa_token() {
   case "${AWS_HELPER_VAULT_ENGINE}" in
     osxkeychain)
@@ -307,7 +296,6 @@ function save_setup() {
   local SETUP_AWS_SECRET_ACCESS_KEY="$( get_prompt_private_string "Enter your AWS secret access key:" )"
   local SETUP_AWS_HELPER_CREDENTIALS="{\"Version\":1,\"AccessKeyId\":\"${SETUP_AWS_ACCESS_KEY_ID}\",\"SecretAccessKey\":\"${SETUP_AWS_SECRET_ACCESS_KEY}\"}"
 
-  source_profile
   save_1fa_token "${SETUP_AWS_HELPER_USER_ARN}" "${SETUP_AWS_HELPER_CREDENTIALS}"
   save_2fa_token $( request_2fa_token )
 
